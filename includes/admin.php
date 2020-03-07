@@ -1048,7 +1048,7 @@ function jr_mt_settings_page() {
 	}
 	echo '</tr></thead><tbody>';
 	foreach ( $paths as $path ) {
-		$full_path = WP_CONTENT_DIR . jr_mt_substr( $path, 1 );
+		$full_path = WP_CONTENT_DIR . DS . jr_mt_substr( $path, 1 );
 		if ( is_dir( $full_path ) ) {
 			$type = 'Directory';
 		} else {
