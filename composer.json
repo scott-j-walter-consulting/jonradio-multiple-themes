@@ -1,0 +1,24 @@
+{
+    "name": "scott-j-walter-consulting/jonradio-multiple-themes",
+    "description": "Select different Themes for one or more WordPress Pages, Posts or other non-Admin pages.  Or Site Home.",
+    "type": "wordpress-plugin",
+    "license": "GPL-2.0-or-later",
+    "authors": [
+        {
+            "name": "David Gewirtz",
+            "homepage": "http://zatzlabs.com/plugins/",
+            "role": "Author"
+        },
+        {
+            "name": "Scott J. Walter",
+            "email": "scott@scottjwalter.consulting",
+            "homepage": "https://scottjwalter.consulting/",
+            "role": "Tweaker"
+        }
+    ],
+    "require": {
+        "php": ">=7.0",
+        "composer/installers": "~1.0",
+        "roave/security-advisories": "dev-master"
+    }
+}
