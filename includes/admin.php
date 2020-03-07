@@ -1034,7 +1034,7 @@ function jr_mt_settings_page() {
 	$paths = array(
 		'/..',
 		'/',
-		'/plugins/',
+		'/plugins',
 		'/plugins/' . dirname( jr_mt_plugin_basename() ),
 		'/plugins/' . dirname( jr_mt_plugin_basename() ) . '/readme.txt'
 	);
