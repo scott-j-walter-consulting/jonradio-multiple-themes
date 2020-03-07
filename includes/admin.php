@@ -1034,22 +1034,21 @@ function jr_mt_settings_page() {
 	$paths = array(
 		'/..',
 		'/',
-		'/wp-content/',
-		'/wp-content/plugins/',
-		'/wp-content/plugins/' . dirname( jr_mt_plugin_basename() ),
-		'/wp-content/plugins/' . dirname( jr_mt_plugin_basename() ) . '/readme.txt'
+		'/plugins/',
+		'/plugins/' . dirname( jr_mt_plugin_basename() ),
+		'/plugins/' . dirname( jr_mt_plugin_basename() ) . '/readme.txt'
 	);
-	echo '<h3>File Permissions</h3><p>All of the Paths shown below are relative to the WordPress Site Path <code>'
-		. ABSPATH
+	echo '<h3>File Permissions</h3><p>All of the Paths shown below are relative to the WordPress Content Directory <code>'
+		. WP_CONTENT_DIR
 		. '</code><br />The first ("/..") is the Parent Directory <code>'
-		. dirname( ABSPATH )
-		. '/</code> and the second ("/") is the WordPress Site Path itself.</p><table class="widefat"><thead><tr><th>Path</th><th>Type</th><th>Read</th><th>Write</th>';
+		. dirname( WP_CONTENT_DIR )
+		. '/</code> and the second ("/") is the WordPress Content Directory itself.</p><table class="widefat"><thead><tr><th>Path</th><th>Type</th><th>Read</th><th>Write</th>';
 	if ( $posix ) {
 		echo '<th>Owner</th><th>Group</th>';
 	}
 	echo '</tr></thead><tbody>';
 	foreach ( $paths as $path ) {
-		$full_path = ABSPATH . jr_mt_substr( $path, 1 );
+		$full_path = WP_CONTENT_DIR . jr_mt_substr( $path, 1 );
 		if ( is_dir( $full_path ) ) {
 			$type = 'Directory';
 		} else {

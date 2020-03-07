@@ -3,7 +3,7 @@
 Plugin Name: Multiple Themes
 Plugin URI: http://zatzlabs.com/plugins/
 Description: Select different Themes for one or more WordPress Pages, Posts or other non-Admin pages.  Or Site Home.
-Version: 7.1.1
+Version: 7.1.2-sjwc.1
 Author: David Gewirtz
 Author URI: http://zatzlabs.com/plugins/
 License: GPLv2
