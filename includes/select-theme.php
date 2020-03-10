@@ -6,18 +6,6 @@ if ( !defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-/**
- * SJWC:  WP-CLI hack to accomodate use of the global $_SERVER[] array
- * which doesn't get set by wp-cli.
- */
-if ( WP_CLI && ( ! isset( $_SERVER ) ) ) {
-	$_SERVER = array(
-		'SERVER_NAME' => '',
-		'SERVER_PORT' => '',
-		'REQUEST_URI' => ''
-	);
-}
-
 
 /**
  * Disable until old Version Settings conversion done properly,
@@ -167,7 +155,24 @@ function jr_mt_theme( $option ) {
 	$theme = $jr_mt_theme[$option];
 	return $theme;
 }
-	
+
+/**
+ * provides a wp-cli trap for $_SERVER[], which doesn't get instantiated when using
+ * the CLI.
+ * 
+ */
+function sjwc_jr_mt_get_server_var() {
+	if ( defined( 'WP_CLI' ) && WP_CLI && ( ! isset( $_SERVER ) ) ) {
+		return array(
+			'SERVER_NAME' => '',
+			'SERVER_PORT' => '',
+			'REQUEST_URI' => ''
+		);
+	}
+
+	return $_SERVER;
+}
+
 /**
  * Returns FALSE for Current Theme
  * 
@@ -179,6 +184,8 @@ function jr_mt_chosen() {
 			in the current URL.
 	*/
 	$queries = jr_mt_query_array(); 
+
+	$sjwc_server = sjwc_jr_mt_get_server_var();
 	
 	/*	KnowHow ThemeForest Paid Theme special processing:
 		if s= is present, and 'knowhow' is either the active WordPress Theme
@@ -194,7 +201,7 @@ function jr_mt_chosen() {
 		complicated by the fact that Override entries take precedence.
 	*/
 	if ( !empty( $settings['query'] ) ) {
-		if ( !empty( $_SERVER['QUERY_STRING'] ) ) {
+		if ( !empty( $sjwc_server['QUERY_STRING'] ) ) {
 			/*	Check Override entries
 			*/
 			foreach ( $settings['override']['query'] as $override_keyword => $override_value_array ) {
@@ -309,16 +316,16 @@ function jr_mt_chosen() {
 			Check for match in "URL Prefix with Asterisk" plugin entries that have been pre-prepped with this Site Alias
 	*/
 	
-	if ( 0 === ( $port = jr_mt_non_default_port( $_SERVER, 'SERVER_PORT' ) ) ) {
+	if ( 0 === ( $port = jr_mt_non_default_port( $sjwc_server, 'SERVER_PORT' ) ) ) {
 		$url_port = '';
 	} else {
 		$url_port = ':' . $port;
 	}
 	$prep_url = jr_mt_prep_url( $current_url = parse_url( JR_MT_HOME_URL, PHP_URL_SCHEME ) 
 		. '://' 
-		. $_SERVER['SERVER_NAME'] ?? ''
+		. $sjwc_server['SERVER_NAME']
 		. $url_port
-		. $_SERVER['REQUEST_URI'] ?? '' );
+		. $sjwc_server['REQUEST_URI'] );
 	$match = array();
 	foreach ( $settings['aliases'] as $key => $alias_array ) {
 		if ( jr_mt_same_prefix_url( $alias_array['prep'], $prep_url ) ) {
@@ -353,7 +360,7 @@ function jr_mt_chosen() {
 		Selected near the end to allow Queries to take precedence.
 	*/
 	if ( !empty( $settings['ajax_all'] )
-		&& ( FALSE !== strpos( $_SERVER['REQUEST_URI'] ?? '', 'admin-ajax.php' ) ) ) {
+		&& ( FALSE !== strpos( $sjwc_server['REQUEST_URI'] ?? '', 'admin-ajax.php' ) ) ) {
 		return $settings['ajax_all'];
 	}
 
@@ -523,6 +530,9 @@ function jr_mt_js_sticky_query( $keyword, $value ) {
 	$action - 'get', 'put', 'del'
 */
 function jr_mt_cookie( $lang, $action, $cookie_value = '' ) {
+
+	$sjwc_server = sjwc_jr_mt_get_server_var();
+
 	switch ( $lang ) {
 		case 'js':
 			$cookie_name = 'jr-mt-remember-query';
@@ -557,14 +567,14 @@ function jr_mt_cookie( $lang, $action, $cookie_value = '' ) {
 				if ( empty( $cookie_value ) ) {
 					return FALSE;
 				} else {
-					return ( $jr_mt_cookie_track[ $lang ] = $function( $cookie_name, $cookie_value, strtotime( $expiry ), $cookie_path, $_SERVER['SERVER_NAME'] ?? '' ) );
+					return ( $jr_mt_cookie_track[ $lang ] = $function( $cookie_name, $cookie_value, strtotime( $expiry ), $cookie_path, $sjwc_server['SERVER_NAME'] ) );
 				}
 				break;
 			case 'del':
 				/*	Don't clutter up output to browser with a Cookie Delete request if a Cookie does not exist.
 				*/
 				if ( isset( $_COOKIE[ $cookie_name ] ) ) {
-					return ( $jr_mt_cookie_track[ $lang ] = setrawcookie( $cookie_name, '', strtotime( '-2 days' ), $cookie_path, $_SERVER['SERVER_NAME'] ?? '' ) );
+					return ( $jr_mt_cookie_track[ $lang ] = setrawcookie( $cookie_name, '', strtotime( '-2 days' ), $cookie_path, $sjwc_server['SERVER_NAME'] ) );
 				}
 				break;
 			case 'clean':
