@@ -1,13 +1,28 @@
 <?php
-/*	Exit if .php file accessed directly
-*/
+/**
+ * Exit if .php file accessed directly
+ */
 if ( !defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-/*	Disable until old Version Settings conversion done properly,
-	typically by displaying the plugin's Settings page in Admin panels.
-*/
+/**
+ * SJWC:  WP-CLI hack to accomodate use of the global $_SERVER[] array
+ * which doesn't get set by wp-cli.
+ */
+if ( WP_CLI && ( ! isset( $_SERVER ) ) ) {
+	$_SERVER = array(
+		'SERVER_NAME' => '',
+		'SERVER_PORT' => '',
+		'REQUEST_URI' => ''
+	);
+}
+
+
+/**
+ * Disable until old Version Settings conversion done properly,
+ * typically by displaying the plugin's Settings page in Admin panels.
+ */	
 if ( ( FALSE === ( $settings = get_option( 'jr_mt_settings' ) ) ) || ( !is_array( $settings ) ) ) {
 	return;
 }
