@@ -316,9 +316,9 @@ function jr_mt_chosen() {
 	}
 	$prep_url = jr_mt_prep_url( $current_url = parse_url( JR_MT_HOME_URL, PHP_URL_SCHEME ) 
 		. '://' 
-		. $_SERVER['SERVER_NAME'] 
+		. $_SERVER['SERVER_NAME'] ?? ''
 		. $url_port
-		. $_SERVER['REQUEST_URI'] );
+		. $_SERVER['REQUEST_URI'] ?? '' );
 	$match = array();
 	foreach ( $settings['aliases'] as $key => $alias_array ) {
 		if ( jr_mt_same_prefix_url( $alias_array['prep'], $prep_url ) ) {
@@ -353,7 +353,7 @@ function jr_mt_chosen() {
 		Selected near the end to allow Queries to take precedence.
 	*/
 	if ( !empty( $settings['ajax_all'] )
-		&& ( FALSE !== strpos( $_SERVER['REQUEST_URI'], 'admin-ajax.php' ) ) ) {
+		&& ( FALSE !== strpos( $_SERVER['REQUEST_URI'] ?? '', 'admin-ajax.php' ) ) ) {
 		return $settings['ajax_all'];
 	}
 
@@ -557,14 +557,14 @@ function jr_mt_cookie( $lang, $action, $cookie_value = '' ) {
 				if ( empty( $cookie_value ) ) {
 					return FALSE;
 				} else {
-					return ( $jr_mt_cookie_track[ $lang ] = $function( $cookie_name, $cookie_value, strtotime( $expiry ), $cookie_path, $_SERVER['SERVER_NAME'] ) );
+					return ( $jr_mt_cookie_track[ $lang ] = $function( $cookie_name, $cookie_value, strtotime( $expiry ), $cookie_path, $_SERVER['SERVER_NAME'] ?? '' ) );
 				}
 				break;
 			case 'del':
 				/*	Don't clutter up output to browser with a Cookie Delete request if a Cookie does not exist.
 				*/
 				if ( isset( $_COOKIE[ $cookie_name ] ) ) {
-					return ( $jr_mt_cookie_track[ $lang ] = setrawcookie( $cookie_name, '', strtotime( '-2 days' ), $cookie_path, $_SERVER['SERVER_NAME'] ) );
+					return ( $jr_mt_cookie_track[ $lang ] = setrawcookie( $cookie_name, '', strtotime( '-2 days' ), $cookie_path, $_SERVER['SERVER_NAME'] ?? '' ) );
 				}
 				break;
 			case 'clean':
