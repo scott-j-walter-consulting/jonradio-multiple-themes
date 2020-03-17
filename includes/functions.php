@@ -252,6 +252,12 @@ function jr_mt_same_prefix_url( $prefix, $url ) {
 	if ( is_string( $url ) ) {
 		$url = jr_mt_prep_url( $url );
 	}
+
+	// If run via wp-cli this key doesn't get set, so force it.
+	if ( defined( 'WP_CLI' ) && WP_CLI ) {
+		$url['host'] = $url['host'] ?? '';
+	}
+
 	if ( $url['host'] === $prefix['host'] ) {
 		if ( $url['port'] === $prefix['port'] ) {
 			if ( $url['path'] === $prefix['path'] ) {
