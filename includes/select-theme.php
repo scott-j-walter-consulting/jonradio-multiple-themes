@@ -162,15 +162,15 @@ function jr_mt_theme( $option ) {
  * 
  */
 function sjwc_jr_mt_get_server_var() {
-	if ( defined( 'WP_CLI' ) && WP_CLI && ( ! isset( $_SERVER ) ) ) {
-		return array(
-			'SERVER_NAME' => '',
-			'SERVER_PORT' => '',
-			'REQUEST_URI' => ''
-		);
+	$server = $_SERVER;
+
+	if ( defined( 'WP_CLI' ) && WP_CLI ) {
+		foreach ( array( 'SERVER_NAME', 'SERVER_PORT', 'REQUEST_URI' ) as $key ) {
+			$server[$key] = $_SERVER[$key] ?? '';
+		}
 	}
 
-	return $_SERVER;
+	return $server;
 }
 
 /**
